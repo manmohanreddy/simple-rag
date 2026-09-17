@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+.claude/hillclimb/*/report.html
+.claude/hillclimb/*/trajectory/
+.claude/hillclimb/*/baseline/traces/
+.claude/hillclimb/*/v*/traces/

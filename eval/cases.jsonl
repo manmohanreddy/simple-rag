@@ -1,0 +1,5 @@
+{"id": "alcohol_limit", "prompt": "What is the alcohol limit for a driver to drive?", "tags": ["dui", "core"]}
+{"id": "highway_speed_limits", "prompt": "What are the Florida highway speed limits?", "tags": ["speed_limits", "core"]}
+{"id": "under18_license", "prompt": "What is the process for a youth below 18 to get a license?", "tags": ["licensing", "core"]}
+{"id": "uphill_parking", "prompt": "How should we park on an uphill?", "tags": ["parking", "edge"]}
+{"id": "school_bus_stopped", "prompt": "What should we do when there is a school bus stopped ahead of us?", "tags": ["road_rules", "edge"]}

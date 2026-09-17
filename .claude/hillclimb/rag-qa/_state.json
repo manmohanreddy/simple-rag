@@ -1,0 +1,15 @@
+{
+  "metrics": [
+    {"id": "correct", "label": "correct", "kind": "binary"},
+    {"id": "grounded", "label": "grounded", "kind": "binary"},
+    {"id": "cites_source", "label": "cites", "kind": "binary"},
+    {"id": "complete", "label": "complete", "kind": "binary"}
+  ],
+  "perf_fields": [
+    {"id": "latency_s", "label": "Latency", "unit": "s"},
+    {"id": "cost_usd", "label": "Cost", "unit": "$"},
+    {"id": "retrieval_score", "label": "Retrieval score"},
+    {"id": "in_tokens", "label": "Input tokens"},
+    {"id": "out_tokens", "label": "Output tokens"}
+  ]
+}
