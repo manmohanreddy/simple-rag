@@ -43,17 +43,17 @@ grow the set in `eval/cases.jsonl` for a more stable number.
 
 ## How it works
 
-1. `ingest.py` walks `data/`, splits each file into overlapping character chunks
-   (`chunking.py`), embeds them locally with `sentence-transformers`
-   (`embeddings.py`), and upserts vectors + text into a Qdrant collection
-   (`store.py`).
-2. `query.py` embeds your question with the same model, retrieves the top-k
-   nearest chunks from Qdrant, and sends them as context to Claude, which
+1. `ingest.py` walks `data/`, splits each file into overlapping token-based chunks
+   sized to the embedding model's max sequence length (`chunking.py`), embeds them
+   locally with `sentence-transformers` (`embeddings.py`), and upserts vectors + text
+   into a Qdrant collection (`store.py`).
+2. `query.py` embeds your question with the same model, retrieves a wide candidate
+   set (`RETRIEVE_K`) from Qdrant, reranks them with a cross-encoder for precision
+   (`reranker.py`) down to `TOP_K`, and sends those as context to Claude, which
    answers grounded in that context and cites sources.
 
 ## Next steps (advanced RAG / fine-tuning track)
 
-- Swap fixed-size chunking for semantic/recursive chunking
-- Add hybrid search (BM25 + vector) or reranking
+- Add hybrid search (BM25 + vector) alongside the cross-encoder reranker
 - Try a hosted embedding model (Voyage AI) for quality comparison
-- Add eval set to measure retrieval + answer quality (see `/claude-api build-eval`)
+- Grow `eval/cases.jsonl` past 5 cases for a more stable score

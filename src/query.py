@@ -4,6 +4,7 @@ import anthropic
 
 from . import config
 from .embeddings import embed
+from .reranker import rerank
 from .store import get_client, search
 
 SYSTEM_PROMPT = """You are a RAG assistant. Answer the user's question using ONLY the
@@ -25,7 +26,8 @@ def answer_with_meta(question: str) -> dict:
     reimplementing the request."""
     client = get_client()
     query_vector = embed([question])[0]
-    hits = search(client, query_vector, config.TOP_K)
+    candidates = search(client, query_vector, config.RETRIEVE_K)
+    hits = rerank(question, candidates, config.TOP_K)
 
     if not hits:
         return {

@@ -1,5 +1,5 @@
 anthropic>=0.69.0
 qdrant-client>=1.12.0
-sentence-transformers>=3.3.0
+sentence-transformers>=3.3.0  # includes CrossEncoder for reranking
 python-dotenv>=1.0.1
 pymupdf>=1.24.0
