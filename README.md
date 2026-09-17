@@ -47,13 +47,15 @@ grow the set in `eval/cases.jsonl` for a more stable number.
    sized to the embedding model's max sequence length (`chunking.py`), embeds them
    locally with `sentence-transformers` (`embeddings.py`), and upserts vectors + text
    into a Qdrant collection (`store.py`).
-2. `query.py` embeds your question with the same model, retrieves a wide candidate
-   set (`RETRIEVE_K`) from Qdrant, reranks them with a cross-encoder for precision
-   (`reranker.py`) down to `TOP_K`, and sends those as context to Claude, which
+2. `query.py` runs hybrid retrieval: dense cosine search (`store.py`) and BM25
+   keyword search (`bm25_search.py`) each fetch `RETRIEVE_K` candidates, merged by
+   rank position via Reciprocal Rank Fusion (`fusion.py`) since their scores aren't
+   on comparable scales. The merged set is reranked with a cross-encoder for
+   precision (`reranker.py`) down to `TOP_K`, then sent to Claude as context, which
    answers grounded in that context and cites sources.
 
 ## Next steps (advanced RAG / fine-tuning track)
 
-- Add hybrid search (BM25 + vector) alongside the cross-encoder reranker
 - Try a hosted embedding model (Voyage AI) for quality comparison
 - Grow `eval/cases.jsonl` past 5 cases for a more stable score
+- Persist the BM25 index instead of rebuilding it from a full Qdrant scroll each run

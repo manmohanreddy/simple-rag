@@ -1,8 +1,7 @@
-from dataclasses import dataclass
-
 from sentence_transformers import CrossEncoder
 
 from . import config
+from .store import ScoredChunk
 
 _model = None
 
@@ -14,21 +13,15 @@ def get_reranker() -> CrossEncoder:
     return _model
 
 
-@dataclass
-class RerankedHit:
-    score: float
-    payload: dict
-
-
-def rerank(query: str, hits: list, top_k: int) -> list[RerankedHit]:
+def rerank(query: str, hits: list[ScoredChunk], top_k: int) -> list[ScoredChunk]:
     if not hits:
         return []
     model = get_reranker()
     pairs = [(query, h.payload["text"]) for h in hits]
     scores = model.predict(pairs)
     reranked = sorted(
-        (RerankedHit(score=float(s), payload=h.payload) for s, h in zip(scores, hits)),
-        key=lambda r: r.score,
+        (ScoredChunk(id=h.id, score=float(s), payload=h.payload) for s, h in zip(scores, hits)),
+        key=lambda c: c.score,
         reverse=True,
     )
     return reranked[:top_k]

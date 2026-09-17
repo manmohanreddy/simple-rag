@@ -2,8 +2,10 @@ import sys
 
 import anthropic
 
+from . import bm25_search
 from . import config
 from .embeddings import embed
+from .fusion import reciprocal_rank_fusion
 from .reranker import rerank
 from .store import get_client, search
 
@@ -26,8 +28,10 @@ def answer_with_meta(question: str) -> dict:
     reimplementing the request."""
     client = get_client()
     query_vector = embed([question])[0]
-    candidates = search(client, query_vector, config.RETRIEVE_K)
-    hits = rerank(question, candidates, config.TOP_K)
+    dense_candidates = search(client, query_vector, config.RETRIEVE_K)
+    keyword_candidates = bm25_search.search(client, question, config.RETRIEVE_K)
+    fused = reciprocal_rank_fusion(dense_candidates, keyword_candidates, top_k=config.RETRIEVE_K)
+    hits = rerank(question, fused, config.TOP_K)
 
     if not hits:
         return {
