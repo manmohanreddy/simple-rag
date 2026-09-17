@@ -27,7 +27,11 @@ Add your own `.txt`/`.md`/`.pdf` files to `data/` and re-run ingest to update th
 `eval/cases.jsonl` holds the test questions. Running the eval calls the real
 `src.query.answer_with_meta()` entry point for each case, grades the answer with a
 `claude-sonnet-5` judge on 4 rubric criteria (`correct`, `grounded`, `cites_source`,
-`complete`), and records latency/cost/retrieval-score per case.
+`complete`), and records cost/retrieval-score plus a per-stage latency breakdown:
+embed, dense search, BM25 search, fusion, rerank, and the LLM call. The first case
+in a run includes one-time model cold-load cost (MiniLM + cross-encoder loading into
+memory); later cases show steady-state latency - don't read case 1's numbers as
+representative.
 
 ```bash
 python -m eval.runner

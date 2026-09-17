@@ -4,7 +4,6 @@ hillclimb report format (see SCHEMA.md / build-eval.md Step 3)."""
 
 import json
 import sys
-import time
 from pathlib import Path
 
 import anthropic
@@ -66,9 +65,8 @@ def grade(judge_client: anthropic.Anthropic, question: str, context: str, answer
 
 def run_case(case: dict) -> tuple[dict, dict]:
     """Returns (results_row, trace_turns)."""
-    start = time.monotonic()
     result = answer_with_meta(case["prompt"])
-    latency_s = round(time.monotonic() - start, 3)
+    timings = result["timings"]
 
     response = result["response"]
     if response is None:
@@ -102,7 +100,14 @@ def run_case(case: dict) -> tuple[dict, dict]:
             for k in ("correct", "grounded", "cites_source", "complete")
         },
         "perf": {
-            "latency_s": latency_s,
+            "embed_s": timings["embed_s"],
+            "dense_search_s": timings["dense_search_s"],
+            "bm25_search_s": timings["bm25_search_s"],
+            "fusion_s": timings["fusion_s"],
+            "rerank_s": timings["rerank_s"],
+            "retrieval_total_s": timings["retrieval_total_s"],
+            "llm_s": timings["llm_s"],
+            "latency_s": timings["total_s"],
             "in_tokens": response.usage.input_tokens,
             "out_tokens": response.usage.output_tokens,
             "cost_usd": round(cost_usd, 6),
@@ -153,9 +158,13 @@ def main() -> None:
             trace_path = traces_dir / f"{case['id']}_rep0.json"
             trace_path.write_text(json.dumps(turns, indent=2), encoding="utf-8")
 
+            p = row["perf"]
             print(f"  ok - correct={row['grade']['correct']} grounded={row['grade']['grounded']}"
                   f" cites={row['grade']['cites_source']} complete={row['grade']['complete']}"
-                  f" cost=${row['perf']['cost_usd']:.4f} latency={row['perf']['latency_s']}s")
+                  f" cost=${p['cost_usd']:.4f}"
+                  f" retrieval={p['retrieval_total_s']}s (dense={p['dense_search_s']}s"
+                  f" bm25={p['bm25_search_s']}s rerank={p['rerank_s']}s)"
+                  f" llm={p['llm_s']}s total={p['latency_s']}s")
 
     print(f"\nDone. Results -> {results_path}")
 

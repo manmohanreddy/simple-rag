@@ -6,7 +6,14 @@
     {"id": "complete", "label": "complete", "kind": "binary"}
   ],
   "perf_fields": [
-    {"id": "latency_s", "label": "Latency", "unit": "s"},
+    {"id": "latency_s", "label": "Total", "unit": "s"},
+    {"id": "retrieval_total_s", "label": "Retrieval", "unit": "s"},
+    {"id": "embed_s", "label": "Embed", "unit": "s"},
+    {"id": "dense_search_s", "label": "Dense search", "unit": "s"},
+    {"id": "bm25_search_s", "label": "BM25 search", "unit": "s"},
+    {"id": "fusion_s", "label": "Fusion", "unit": "s"},
+    {"id": "rerank_s", "label": "Rerank", "unit": "s"},
+    {"id": "llm_s", "label": "LLM", "unit": "s"},
     {"id": "cost_usd", "label": "Cost", "unit": "$"},
     {"id": "retrieval_score", "label": "Retrieval score"},
     {"id": "in_tokens", "label": "Input tokens"},
