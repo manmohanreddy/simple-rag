@@ -19,3 +19,7 @@ def embed(texts: list[str]) -> list[list[float]]:
 
 def embedding_dim() -> int:
     return get_model().get_embedding_dimension()
+
+
+def get_tokenizer():
+    return get_model().tokenizer

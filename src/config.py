@@ -10,6 +10,8 @@ DATA_DIR = os.environ.get("DATA_DIR", "./data")
 EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-opus-5")
 
-CHUNK_SIZE = 800
-CHUNK_OVERLAP = 150
+# Token counts (embedding model's own tokenizer), not characters.
+# all-MiniLM-L6-v2 max_seq_length is 256 - stay comfortably under it.
+CHUNK_SIZE = 200
+CHUNK_OVERLAP = 40
 TOP_K = 4

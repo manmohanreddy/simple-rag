@@ -5,7 +5,7 @@ import pymupdf
 
 from . import config
 from .chunking import chunk_text
-from .embeddings import embed, embedding_dim
+from .embeddings import embed, embedding_dim, get_tokenizer
 from .store import ensure_collection, get_client, upsert_chunks
 
 SUPPORTED_EXTENSIONS = {".txt", ".md", ".pdf"}
@@ -35,12 +35,13 @@ def main() -> None:
 
     client = get_client()
     ensure_collection(client, embedding_dim())
+    tokenizer = get_tokenizer()
 
     id_counter = itertools.count()
     total_chunks = 0
 
     for source, text in docs:
-        chunks = chunk_text(text, config.CHUNK_SIZE, config.CHUNK_OVERLAP)
+        chunks = chunk_text(text, tokenizer, config.CHUNK_SIZE, config.CHUNK_OVERLAP)
         if not chunks:
             continue
         vectors = embed(chunks)
