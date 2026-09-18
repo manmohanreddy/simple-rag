@@ -18,3 +18,6 @@ CHUNK_OVERLAP = 40
 
 RETRIEVE_K = 20  # bi-encoder first pass (recall)
 TOP_K = 4        # cross-encoder reranked final count (precision)
+
+LLM_TIMEOUT_S = float(os.environ.get("LLM_TIMEOUT_S", "60"))
+API_KEY = os.environ.get("API_KEY")  # shared team API key for the HTTP service

@@ -65,6 +65,7 @@ def answer_with_meta(question: str) -> dict:
             "text": "No documents ingested yet. Run `python -m src.ingest` first.",
             "hits": [],
             "response": None,
+            "stop_reason": None,
             "timings": timings,
         }
 
@@ -72,7 +73,7 @@ def answer_with_meta(question: str) -> dict:
     user_message = f"Context:\n\n{context}\n\nQuestion: {question}"
 
     t0 = time.monotonic()
-    llm = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+    llm = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY, timeout=config.LLM_TIMEOUT_S)
     response = llm.messages.create(
         model=config.CLAUDE_MODEL,
         max_tokens=2048,
@@ -90,6 +91,7 @@ def answer_with_meta(question: str) -> dict:
         "context": context,
         "user_message": user_message,
         "response": response,
+        "stop_reason": response.stop_reason,
         "timings": timings,
     }
 

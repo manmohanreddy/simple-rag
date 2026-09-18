@@ -4,3 +4,5 @@ sentence-transformers>=3.3.0  # includes CrossEncoder for reranking
 python-dotenv>=1.0.1
 pymupdf>=1.24.0
 rank-bm25>=0.2.2
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0

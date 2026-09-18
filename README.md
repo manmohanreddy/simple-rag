@@ -1,19 +1,18 @@
 # Simple RAG
 
-Local RAG pipeline: Qdrant (Docker) for vectors, sentence-transformers for local
-embeddings, Claude for generation, files ingested from `./data`.
+RAG pipeline: Qdrant for vectors, sentence-transformers for local embeddings,
+Claude for generation, files ingested from `./data`. Runs either as a local CLI
+(`python -m src.query`) or as an HTTP service (`src/api.py`) behind Docker Compose.
 
-## Setup
+## Setup - local CLI (dev/experimentation)
 
 ```bash
-docker compose up -d          # starts Qdrant on localhost:6333
+docker compose up -d qdrant   # starts Qdrant on localhost:6333
 python -m venv .venv
 .venv\Scripts\activate         # Windows
 pip install -r requirements.txt
-copy .env.example .env         # then fill in ANTHROPIC_API_KEY
+copy .env.example .env         # then fill in ANTHROPIC_API_KEY and API_KEY
 ```
-
-## Usage
 
 ```bash
 python -m src.ingest                     # chunk + embed + index everything in data/
@@ -21,6 +20,35 @@ python -m src.query "What is this project about?"
 ```
 
 Add your own `.txt`/`.md`/`.pdf` files to `data/` and re-run ingest to update the index.
+
+## Setup - HTTP service (team use)
+
+```bash
+copy .env.example .env
+# fill in ANTHROPIC_API_KEY, and generate a shared team key:
+python -c "import secrets; print(secrets.token_urlsafe(32))"   # -> API_KEY in .env
+
+docker compose up -d --build   # builds the app image, starts app + Qdrant together
+docker compose exec app python -m src.ingest   # ingest data/ into the running stack
+```
+
+```bash
+curl http://localhost:8000/health
+curl http://localhost:8000/query \
+  -X POST -H "Content-Type: application/json" -H "X-API-Key: <your API_KEY>" \
+  -d '{"question": "What is this project about?"}'
+```
+
+`POST /query` returns `{answer, sources, timings, warning}` - `warning` is set
+if Claude's response hit `max_tokens` (truncated); a `refusal` stop reason
+returns HTTP 502 instead of a truncated/empty answer. `GET /health` reports
+Qdrant reachability without requiring the API key.
+
+**Cold-start note:** the first request after the app container starts pays a
+one-time cost loading the embedding + reranker models into memory (tens of
+seconds in a fresh container - slower than a warm local venv). Every request
+after that is steady-state (sub-2s retrieval). This is expected, not a bug -
+don't read the first request's latency as representative.
 
 ## Evaluation
 
@@ -58,6 +86,13 @@ signal. Grow further in `eval/cases.jsonl` as needed.
    on comparable scales. The merged set is reranked with a cross-encoder for
    precision (`reranker.py`) down to `TOP_K`, then sent to Claude as context, which
    answers grounded in that context and cites sources.
+
+## Production readiness
+
+Phase 1 done: HTTP API, API key auth, Dockerized app, request timeout +
+`stop_reason` handling. Remaining phases (tests/CI, incremental ingestion,
+structured logging/observability, ops hardening) are tracked as a plan - ask
+about "production readiness" to pick it back up.
 
 ## Next steps (advanced RAG / fine-tuning track)
 

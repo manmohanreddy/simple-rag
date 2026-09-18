@@ -8,5 +8,24 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
 
+  app:
+    build: .
+    container_name: simple-rag-app
+    env_file: .env
+    environment:
+      # Override the host-oriented default from .env - inside the compose
+      # network the app reaches Qdrant by service name, not localhost.
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      - qdrant
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      # Persist downloaded embedding/reranker model weights across container
+      # restarts/rebuilds - otherwise every fresh container re-downloads them.
+      - hf_cache:/root/.cache/huggingface
+
 volumes:
   qdrant_storage:
+  hf_cache:
