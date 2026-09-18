@@ -42,8 +42,9 @@ Open `.claude/hillclimb/rag-qa/report.html` for per-case scores and links to ful
 transcripts (`.claude/hillclimb/rag-qa/baseline/traces/`). Failed calls land in
 `errors.jsonl`, not `results.jsonl`.
 
-Only 5 seed cases right now - fine to start, but expect a noisy headline score;
-grow the set in `eval/cases.jsonl` for a more stable number.
+15 cases (5 hand-written, 10 pulled from the source doc's own Q&A content,
+paraphrased, spanning topics beyond the original 5) - stable enough for a real
+signal. Grow further in `eval/cases.jsonl` as needed.
 
 ## How it works
 
@@ -61,5 +62,4 @@ grow the set in `eval/cases.jsonl` for a more stable number.
 ## Next steps (advanced RAG / fine-tuning track)
 
 - Try a hosted embedding model (Voyage AI) for quality comparison
-- Grow `eval/cases.jsonl` past 5 cases for a more stable score
 - Persist the BM25 index instead of rebuilding it from a full Qdrant scroll each run

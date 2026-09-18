@@ -3,3 +3,13 @@
 {"id": "under18_license", "prompt": "What is the process for a youth below 18 to get a license?", "tags": ["licensing", "core"]}
 {"id": "uphill_parking", "prompt": "How should we park on an uphill?", "tags": ["parking", "edge"]}
 {"id": "school_bus_stopped", "prompt": "What should we do when there is a school bus stopped ahead of us?", "tags": ["road_rules", "edge"]}
+{"id": "texting_while_driving", "prompt": "Is it legal to text while driving in Florida?", "tags": ["distracted_driving", "core"]}
+{"id": "child_seatbelt_rule", "prompt": "Are kids required to wear seat belts in the car?", "tags": ["seatbelt", "core"]}
+{"id": "left_lane_faster_car", "prompt": "What should I do if a faster car comes up behind me while I'm in the left lane?", "tags": ["road_rules", "core"]}
+{"id": "dui_record_duration", "prompt": "How long does a DUI stay on your driving record?", "tags": ["dui", "core"]}
+{"id": "abs_slippery_road", "prompt": "What should a driver do if their car with ABS starts skidding on a slippery road?", "tags": ["braking", "edge"]}
+{"id": "aggressive_driver", "prompt": "How should I handle an aggressive driver tailgating me?", "tags": ["road_rules", "edge"]}
+{"id": "mirror_adjustment_timing", "prompt": "When should you adjust your car mirrors?", "tags": ["pre_drive", "edge"]}
+{"id": "windshield_stickers", "prompt": "Can I put stickers or posters on my windshield?", "tags": ["vehicle_equipment", "edge"]}
+{"id": "emotional_driving", "prompt": "Is it safe to drive when you're upset or angry?", "tags": ["safe_driving", "edge"]}
+{"id": "unlicensed_driver_penalty", "prompt": "What happens if I let someone without a license drive my car?", "tags": ["licensing", "core"]}
